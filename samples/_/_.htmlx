@@ -1,15 +1,24 @@
-// Main entrypoint
-html {
-  head(title: "SysCross Spec", lang: "en");
-  body(theme: "minimal", dark: true);
+// Configuration & constants
+title = "SysCross Documentation"
+theme = "minimal"
+darkmode = true
+use_sidebar = false
+
+// Entrypoint: layout composition
+html(lang="en") {
+  head;
+  body;
 }
 
+// Head definition: consumes $title directly
 head {
-  meta(charset: "utf-8")
+  meta(charset="utf-8")
+  meta(name="viewport", content="width=device-width, initial-scale=1.0")
   title { $title }
+  link(rel="stylesheet", href="/style.css")
 }
 
-// Spaced selectors: clean and readable
+// Body definition: consumes top-level variables
 body .theme-$theme {
   header #top .header .flex-between {
     .logo {
@@ -17,26 +26,43 @@ body .theme-$theme {
       span .accent { "X" }
     }
 
-    if $dark {
-      span .badge { "Dark Mode" }
+    if $darkmode {
+      span .badge .badge-dark { "Dark Mode" }
+    }
+  }
+
+  if $use_sidebar {
+    aside .sidebar {
+      nav {
+        a(href="/docs") { "Docs" }
+        a(href="/specs") { "Specs" }
+      }
     }
   }
 
   main #content .container {
-    // Multiple classes separated by spaces
     section .hero .text-center {
-      h1 { "SysCross Engine" }
-      p .lead { "Clean markup without clutter" }
+      h1 { $title }
+      p .lead { "Clean markup without syntactic clutter" }
     }
 
     hr
 
-    // Div with multiple utility classes
-    .grid-cards .gap-4 .p-2 {
+    .grid-cards .gap-4 {
       .card #txx-info {
         h3 { "cargo-txx" }
         p { "C++ to TXX helper parser." }
       }
+      .card #rsx-info {
+        h3 { "cargo-rsx" }
+        p { "TXX to RSX to Safe Rust transpile pipeline." }
+      }
     }
   }
+
+  footer .footer {
+    p { "© 2026 SysCross. All rights reserved." }
+  }
+
+  script(src="/bundle.js")
 }
