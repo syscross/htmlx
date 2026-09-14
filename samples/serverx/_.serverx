@@ -1,34 +1,48 @@
-// routes/users/[id].serverx
 
-// 1. Server-only execution block (Runs on Rust/WASM edge runtime, never leaks to client)
 @server {
-    // URL params and context injected implicitly
-    let user_id = $params.id;
-    let auth = $req.headers.get("Authorization");
+  use db "sqlite:prod.db"
+  let user = auth::verify(req.headers.cookie) or redirect("/login")
+  let items = db::query("SELECT id, title, done FROM todos WHERE uid = ?", user.id)
 
-    // Native DB query / Rust-style error handling
-    let user = db::query("SELECT id, name, role FROM users WHERE id = ?", user_id)?;
+  @action toggle_todo(id: i64) {
+    db::exec("UPDATE todos SET done = NOT done WHERE id = ? AND uid = ?", id, user.id)
+    return reload()
+  }
 }
 
-// 2. Pure REST fallback (if client requests application/json)
-@api:delete {
-    db::execute("DELETE FROM users WHERE id = ?", $params.id)?;
-    return Response::ok({ status: "deleted" });
-}
-
-// 3. View template (Standard htmlx syntax consuming @server variables)
-layout "layouts/main.htmlx"
-
-main #profile .container {
-  header {
-    h1 { $user.name }
-    span .badge { $user.role }
+html (lang="ko") {
+  head {
+    meta (charset="utf-8")
+    meta (name="viewport", content="width=device-width, initial-scale=1.0")
+    title { "Todo List | " $user.name }
+    link (rel="icon", href="/favicon.ico")
   }
 
-  section .actions {
-    // Interacts cleanly with the REST endpoint defined above
-    button .btn-danger (delete=$req.path, target="#profile", swap="remove") {
-      "Delete Account"
+  body {
+    main.app {
+      header {
+        h1 { "Todo List" }
+        span.user { $user.name }
+      }
+
+      ul.list {
+        @server for item in $items {
+          li (class=item.done ? "done" : "") {
+            span { $item.title }
+            button (on:click -> @action toggle_todo(item.id)) { "Check" }
+          }
+        } empty {
+          li.empty { "No tasks registered." }
+        }
+      }
     }
   }
+}
+
+@style {
+  body { margin: 0; background: #fafafa; }
+  .app { max-w: 480px; margin: 40px auto; font-family: sans-serif; }
+  .list { list-style: none; padding: 0; }
+  li { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #ddd; }
+  li.done span { text-decoration: line-through; opacity: 0.5; }
 }
