@@ -1,0 +1,42 @@
+title = "SysCross Documentation"
+theme = "minimal"
+
+html(lang="en") {
+  head;
+  body;
+}
+
+head {
+  utf8
+  viewport
+  title { $title }
+  css "/style.css"
+  
+  // High-performance Rust WASM core
+  wasm "/pkg/engine.wasm"
+}
+
+body .theme-$theme {
+  header #top {
+    h1 { $title }
+  }
+
+  main #content .container {
+    // 1. Clean native markx block
+    markx {
+      # Native Architecture
+      Zero runtime overhead.
+    }
+
+    // 2. "Fine, go use your heavy virtual DOM here" block
+    react (client="hydrate") {
+      import { LegacyChart } from "./components/HeavyChart.tsx"
+
+      export default function Container() {
+        return <LegacyChart theme={$theme} />
+      }
+    }
+  }
+
+  include "components/footer.htmlx"
+}

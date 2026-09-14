@@ -1,0 +1,49 @@
+// Configuration & constants
+title = "SysCross Documentation"
+theme = "minimal"
+darkmode = true
+
+// Pipeline entrypoint
+html(lang="en") {
+  head;
+  body;
+}
+
+// Clean head block without boilerplate clutter
+head {
+  utf8
+  viewport
+  title { $title }
+  icon "/favicon.ico"
+  css "/style.css"
+  js "/bundle.js"
+}
+
+// Main body with modular includes and markx content
+body .theme-$theme {
+  // Directly drop external component markup
+  include "components/header.htmlx"
+
+  main #content .container {
+    include "components/sidebar.htmlx"
+
+    article .post {
+      // Native markx block embedded inside layout
+      markx {
+        # SysCross Engine
+
+        High-performance migration toolchain with zero boilerplate.
+
+        #. Parse C++ codebase with cargo-txx
+          #. Clang AST traversal
+          #. Intermediate representation
+        #. Emit verified code with cargo-rsx
+
+        *Fast*, _clean_, and robust.
+      }
+    }
+  }
+
+  // Footer dropped at the end
+  include "components/footer.htmlx"
+}

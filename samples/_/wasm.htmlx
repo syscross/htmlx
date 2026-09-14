@@ -1,0 +1,17 @@
+head {
+  utf8
+  viewport
+  title { "SysCross Wasm App" }
+
+  // Mount wasm module directly
+  wasm "/pkg/engine_bg.wasm"
+}
+
+body {
+  main #content {
+    canvas #renderer (width=800, height=600)
+
+    // Directly bind wasm exported function to DOM event
+    button #run (onclick=wasm::run_pipeline) { "Execute" }
+  }
+}

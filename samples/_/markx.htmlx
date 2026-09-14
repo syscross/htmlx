@@ -1,0 +1,17 @@
+main #content .container {
+  article .post-body {
+    // Switch parsing mode to markx inside this block
+    markx {
+      # SysCross Engine Architecture
+
+      The next-generation migration toolchain.
+
+      #. C++ Parsing with cargo-txx
+        #. Clang AST traversal
+        #. Intermediate representation
+      #. Safe Rust emission with cargo-rsx
+
+      *Clean*, _fast_, and zero boilerplate.
+    }
+  }
+}

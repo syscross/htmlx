@@ -1,0 +1,17 @@
+head {
+  // Direct TS file inclusion (auto transpiled at build time)
+  ts "/src/app.ts"
+}
+
+body {
+  // Or inline strict TypeScript block
+  ts {
+    interface Config {
+      theme: string;
+      debug: boolean;
+    }
+
+    const conf: Config = { theme: $theme, debug: $darkmode };
+    console.log("Hydrated with config:", conf);
+  }
+}

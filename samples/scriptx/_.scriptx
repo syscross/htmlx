@@ -1,0 +1,36 @@
+// Pure data models (No classes, pure structs)
+struct User {
+  id: str,
+  name: str,
+  role: str,
+}
+
+// Global/Local reactive state definition
+state users: List<User> = []
+state loading: bool = false
+
+// Safe async handler without try/catch
+async fn load_users() {
+  loading = true
+  
+  // '?' acts like Rust: unwraps Ok or early-returns Err cleanly
+  let res = http::get("/api/users").await?
+  let data = res.json::<List<User>>()?
+
+  // Pipeline filter with pattern matching
+  users = data
+    .filter(|u| u.role != "BANNED")
+    .map(|u| User {
+      id: u.id,
+      name: u.name.trim(),
+      role: u.role.to_lower(),
+    })
+
+  loading = false
+}
+
+// Action triggered directly from UI
+fn kick_user(target_id: str) {
+  // Direct state mutation triggers UI update automatically
+  users.retain(|u| u.id != target_id)
+}
