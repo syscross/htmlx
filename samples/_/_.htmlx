@@ -1,54 +1,58 @@
-// 1. 엔트리포인트 (main 함수처럼 문서 구조를 바인딩)
-html(lang="ko") {
-  head;
-  body;
+// Main entrypoint: define structure and pass props
+html {
+  head(title: "SysCross Spec", lang: "en");
+  body(theme: "minimal", dark: true, sidebar: false);
 }
 
-// 2. 메타데이터 정의 블록
+// Head definition: consumes $title directly
 head {
-  meta(charset="utf-8")
+  meta(charset: "utf-8")
   meta(name="viewport", content="width=device-width, initial-scale=1.0")
-  title { "SysCross Dev" }
+  title { $title }
   link(rel="stylesheet", href="/style.css")
 }
 
-// 3. 뷰 본문 정의 블록 (0-indent로 쾌적하게 시작)
-body.dark-theme {
+// Body definition: consumes $theme, $dark, and $sidebar
+body.theme-$theme {
   header#top.header.flex-between {
     .logo {
       span.brand { "SYS" }
       span.accent { "X" }
     }
-    nav.nav-links {
-      a(href="/docs") { "Docs" }
-      a(href="/specs") { "Specs" }
-      a(href="https://github.com/syscross") { "GitHub" }
+
+    // Check boolean flags
+    if $dark {
+      span.badge { "Dark Mode" }
+    }
+  }
+
+  // Conditional component rendering
+  if $sidebar {
+    aside.sidebar {
+      nav {
+        a(href="/docs") { "Docs" }
+        a(href="/specs") { "Specs" }
+      }
     }
   }
 
   main#content.container {
     section.hero {
-      h1 { "Next-gen Migration Helper" }
-      p.lead {
-        "C++에서 Rust로 넘어가는 파이프라인\n"
-        "문법적 피로감을 걷어낸 독자 규격 툴체인"
-      }
-      .btn-group {
-        button.btn.btn-primary { "Get Started" }
-        button.btn.btn-ghost { "View on GitHub" }
-      }
+      h1 { "SysCross Engine" }
+      p { "Active Theme: " $theme }
     }
 
     hr
 
-    section.grid-cards {
+    // Tag name omitted: defaults to div
+    .grid-cards {
       .card#txx-info {
         h3 { "cargo-txx" }
-        p { "C++의 복잡성을 걸러내고 Rust 규율을 덧입히는 단계" }
+        p { "C++ to TXX helper parser." }
       }
       .card#rsx-info {
         h3 { "cargo-rsx" }
-        p { "단계별 초기화를 허용하며 안전한 Rust로 안착시키는 단계" }
+        p { "TXX to RSX to Safe Rust transpile pipeline." }
       }
     }
   }
