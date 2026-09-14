@@ -1,65 +1,42 @@
-// Main entrypoint: define structure and pass props
+// Main entrypoint
 html {
   head(title: "SysCross Spec", lang: "en");
-  body(theme: "minimal", dark: true, sidebar: false);
+  body(theme: "minimal", dark: true);
 }
 
-// Head definition: consumes $title directly
 head {
   meta(charset: "utf-8")
-  meta(name="viewport", content="width=device-width, initial-scale=1.0")
   title { $title }
-  link(rel="stylesheet", href="/style.css")
 }
 
-// Body definition: consumes $theme, $dark, and $sidebar
-body.theme-$theme {
-  header#top.header.flex-between {
+// Spaced selectors: clean and readable
+body .theme-$theme {
+  header #top .header .flex-between {
     .logo {
-      span.brand { "SYS" }
-      span.accent { "X" }
+      span .brand { "SYS" }
+      span .accent { "X" }
     }
 
-    // Check boolean flags
     if $dark {
-      span.badge { "Dark Mode" }
+      span .badge { "Dark Mode" }
     }
   }
 
-  // Conditional component rendering
-  if $sidebar {
-    aside.sidebar {
-      nav {
-        a(href="/docs") { "Docs" }
-        a(href="/specs") { "Specs" }
-      }
-    }
-  }
-
-  main#content.container {
-    section.hero {
+  main #content .container {
+    // Multiple classes separated by spaces
+    section .hero .text-center {
       h1 { "SysCross Engine" }
-      p { "Active Theme: " $theme }
+      p .lead { "Clean markup without clutter" }
     }
 
     hr
 
-    // Tag name omitted: defaults to div
-    .grid-cards {
-      .card#txx-info {
+    // Div with multiple utility classes
+    .grid-cards .gap-4 .p-2 {
+      .card #txx-info {
         h3 { "cargo-txx" }
         p { "C++ to TXX helper parser." }
       }
-      .card#rsx-info {
-        h3 { "cargo-rsx" }
-        p { "TXX to RSX to Safe Rust transpile pipeline." }
-      }
     }
   }
-
-  footer.footer {
-    p { "© 2026 SysCross. All rights reserved." }
-  }
-
-  script(src="/bundle.js")
 }
